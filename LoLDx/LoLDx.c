@@ -91,7 +91,7 @@ LoLDx_test (
 	LoLDx *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
@@ -114,7 +114,7 @@ LoLDx_EndScene (
 	if (!lolDx->originalEndScene) {
 		lolDx->originalEndScene = (void *) HookEngine_get_original_function ((ULONG_PTR) LoLDx_EndScene);
 		if (!lolDx->originalEndScene) {
-			fail ("EndScene is not correctly hooked.");
+			error ("EndScene is not correctly hooked.");
 			return D3D_OK;
 		}
 	}

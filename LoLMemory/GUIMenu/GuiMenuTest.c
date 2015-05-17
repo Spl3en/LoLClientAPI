@@ -15,12 +15,12 @@ GUIMenu_test (
 	GUIMenu *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (!(GUIMinimap_test (this->guiMinimap))) {
-		fail ("GUIMinimap test unit failed.");
+		error ("GUIMinimap test unit failed.");
 		return false;
 	}
 	dbg ("[OK] GUIMinimap test success.");

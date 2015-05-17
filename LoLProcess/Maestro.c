@@ -96,7 +96,7 @@ Maestro_test (
 	Maestro *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 

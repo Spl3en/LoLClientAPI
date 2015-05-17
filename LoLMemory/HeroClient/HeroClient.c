@@ -44,7 +44,7 @@ HeroClient_init (
 	DWORD sizeOfModule
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
@@ -80,7 +80,7 @@ HeroClient_init (
 	}
 
 	if (!heroClientStr) {
-		fail ("HeroClientStr not found.");
+		error ("HeroClientStr not found.");
 		return false;
 	}
 
@@ -123,7 +123,8 @@ HeroClient_init (
         "xxxxx"
         "xxxxxxxxxxx"
         "xxxxxxx"
-        "xx????"
+        "xx????",
+		NULL
 	);
 
 	if (heroClientInstance)
@@ -135,7 +136,7 @@ HeroClient_init (
 
 		if (!this->pThis) {
 			// We cannot conclude an error occurred because it is a normal behavior in spectator mode
-			warn ("HeroClientInstance not initialized. Are you in spectator mode ?");
+			warning ("HeroClientInstance not initialized. Are you in spectator mode ?");
 		}
 
 		return true;

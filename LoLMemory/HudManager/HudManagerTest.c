@@ -15,24 +15,24 @@ HudManager_test (
 	HudManager *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (!HudCamera_test (this->hudCamera)) {
-		fail ("HudCamera unit test failed.");
+		error ("HudCamera unit test failed.");
 		return false;
 	}
 	dbg ("[OK] HudCamera test success.");
 
 	if (!HudCameraSettings_test (this->hudCameraSettings)) {
-		fail ("HudCameraSettings unit test failed.");
+		error ("HudCameraSettings unit test failed.");
 		return false;
 	}
 	dbg ("[OK] HudCameraSettings test success.");
 
 	if (!HudCursorTarget_test (this->hudCursorTarget)) {
-		fail ("HudCursorTarget unit test failed.");
+		error ("HudCursorTarget unit test failed.");
 		return false;
 	}
 	dbg ("[OK] HudCursorTarget test success.");

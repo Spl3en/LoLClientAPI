@@ -45,26 +45,26 @@ LoLClientAPI_recv (
 
 	// And receive its response
 	if (!es_recv_buffer (this->clientSocket, packet, packetSize)) {
-		warn ("Error when receiving the last packet (API_RECV_ERROR).");
+		warning ("Error when receiving the last packet (API_RECV_ERROR).");
 		this->lastError = API_RECV_ERROR;
 		return false;
 	}
 
 	if (packet->request == REQUEST_FAIL) {
-		warn ("Request failed received (REQUEST_FAIL).");
+		warning ("Request failed received (REQUEST_FAIL).");
 		this->lastError = API_REQUEST_FAIL;
 		return false;
 	}
 
 	if (!LoLAPIRequest_is_valid (packet->request)) {
-		warn ("Request received from the APIServer isn't supported : %d (API_REQUEST_INVALID).", packet->request);
+		warning ("Request received from the APIServer isn't supported : %d (API_REQUEST_INVALID).", packet->request);
 		this->lastError = API_REQUEST_INVALID;
 		return false;
 	}
 
 	// Check if the received answer type is the same than the requested one
 	if (packet->request != originalRequest) {
-		warn ("Not received the queried request. Client = <%s>, Server = <%s>) (API_REQUEST_UNSYNCHRONIZED).",
+		warning ("Not received the queried request. Client = <%s>, Server = <%s>) (API_REQUEST_UNSYNCHRONIZED).",
 			LoLAPIRequest_to_string (originalRequest),
 			LoLAPIRequest_to_string (packet->request)
 		);
@@ -91,14 +91,14 @@ LoLClientAPI_send (
 	int packetSize
 ) {
 	if (!LoLAPIRequest_is_valid (packet->request)) {
-		warn ("Request sent to APIServer isn't valid : %d (API_REQUEST_INVALID).", packet->request);
+		warning ("Request sent to APIServer isn't valid : %d (API_REQUEST_INVALID).", packet->request);
 		this->lastError = API_REQUEST_INVALID;
 		return false;
 	}
 
 	// Send packet to the server ...
 	if (es_send (this->clientSocket, packet, packetSize) == -1) {
-		warn ("Error when sending the packet <%s> (API_SEND_ERROR).", LoLAPIRequest_to_string (packet->request));
+		warning ("Error when sending the packet <%s> (API_SEND_ERROR).", LoLAPIRequest_to_string (packet->request));
 		this->lastError = API_SEND_ERROR;
 		return false;
 	}
@@ -120,7 +120,7 @@ LoLClientAPI_init (
 
 	// Initiate the connection
 	if ((this->clientSocket = es_client_new_from_ip ("127.0.0.1", LOLAPI_PORT)) == NULL) {
-		warn ("LoLServerAPI not found.");
+		warning ("LoLServerAPI not found.");
 		this->clientSocket = NULL;
 		return false;
 	}
@@ -130,7 +130,7 @@ LoLClientAPI_init (
 	unsigned char * answer = es_recv (this->clientSocket, &answerSize);
 
 	if (answerSize <= 0 || strncmp (answer, LOLAPI_STATUS_READY, answerSize) != 0) {
-		warn ("Malformed LoLAPIServer status response. (answerSize = %d, answer = <%s>)", answerSize, answer);
+		warning ("Malformed LoLAPIServer status response. (answerSize = %d, answer = <%s>)", answerSize, answer);
 		return false;
 	}
 

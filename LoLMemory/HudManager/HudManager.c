@@ -103,7 +103,8 @@ HudManager_init (
 		"xx"
 		"xxxxx"
 		"xxx"
-		"xx????"
+		"xx????",
+		NULL
 	);
 
 	if (hudManagerInstance)

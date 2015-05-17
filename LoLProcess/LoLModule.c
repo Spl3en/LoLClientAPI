@@ -76,12 +76,10 @@ LoLModule_init (
 	}
 
 	// Initialize HudChat
-	/*
 	if (!(this->playerHUD = PlayerHUD_new (baseAddress, sizeOfModule))) {
 		dbg ("Cannot get HudChat.");
 		return false;
 	}
-	*/
 
 	return true;
 }
@@ -121,12 +119,12 @@ LoLModule_test (
 	bool result = true;
 
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (!HudManager_test (this->hudManager)) {
-		fail ("HudManager test failed.");
+		error ("HudManager test failed.");
 		result = false;
 	}
 	else {
@@ -134,7 +132,7 @@ LoLModule_test (
 	}
 
 	if (!HeroClient_test (this->heroClient)) {
-		fail ("HeroClient test failed.");
+		error ("HeroClient test failed.");
 		result = false;
 	}
 	else {
@@ -142,7 +140,7 @@ LoLModule_test (
 	}
 
 	if (!ChampionArray_test (this->championArray)) {
-		fail ("ChampionArray test failed.");
+		error ("ChampionArray test failed.");
 		result = false;
 	}
 	else {
@@ -150,7 +148,7 @@ LoLModule_test (
 	}
 
 	if (!GUIMenu_test (this->guiMenu)) {
-		fail ("GUIMenu unit test failed.");
+		error ("GUIMenu unit test failed.");
 		result = false;
 	}
 	else {

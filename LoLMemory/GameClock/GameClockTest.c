@@ -15,7 +15,7 @@ GameClock_test (
 	GameClock *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 

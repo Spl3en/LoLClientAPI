@@ -20,7 +20,7 @@ void startInjection (void)
 
 	// Install LoLServerAPI inside League of Legends.exe process
 	if ((LoL = LoLProcess_new ()) == NULL) {
-		warn ("Injection failed.");
+		warning ("Injection failed.");
 		return;
 	}
 
@@ -29,7 +29,7 @@ void startInjection (void)
 
 	// Instanciate and listen to a connection
 	if ((connection = LoLServerAPI_new ()) == NULL) {
-		warn ("API server connection error.");
+		warning ("API server connection error.");
 		return;
 	}
 

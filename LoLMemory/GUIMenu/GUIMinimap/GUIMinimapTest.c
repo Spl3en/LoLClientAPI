@@ -15,14 +15,14 @@ GUIMinimap_test (
 	GUIMinimap *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	Position2D screenPosition;
 
 	if (!this->pThis) {
-		fail ("GUIMinimap offset isn't correct.");
+		error ("GUIMinimap offset isn't correct.");
 		return false;
 	}
 
@@ -31,7 +31,7 @@ GUIMinimap_test (
 	dbg ("Minimap screen position detected : x=%d y=%d", screenPosition.x, screenPosition.y);
 
 	if (screenPosition.x == 0 && screenPosition.y == 0) {
-		fail ("GUIMinimap position test failed.");
+		error ("GUIMinimap position test failed.");
 	}
 
 

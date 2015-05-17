@@ -15,12 +15,12 @@ HudCameraSettings_test (
 	HudCameraSettings *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (!(this->cameraActivated == 0 || this->cameraActivated == 1)) {
-		fail ("Camera activated wrong status : %d\n", this->cameraActivated);
+		error ("Camera activated wrong status : %d\n", this->cameraActivated);
 	}
 
 	return true;

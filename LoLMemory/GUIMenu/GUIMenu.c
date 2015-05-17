@@ -102,7 +102,8 @@ GUIMenu_init (
 		"xx"
 		"xxxxx"
 		"xxx"
-		"xx????x"
+		"xx????x",
+		NULL
 	);
 
 	if (GUIMenuInstance)

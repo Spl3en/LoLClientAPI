@@ -612,11 +612,11 @@ log_chat_message (
 	char * message,
 	int messageLength
 ) {
-    return;
 	wait_api ();
+    dbg (" ! ");
 
 	if (!(lolClient && lolClient->lol && lolClient->lol->playerHUD && lolClient->lol->playerHUD->hudChat)) {
-		fail ("Cannot find correctly the hudChat pointer.");
+		error ("Cannot find correctly the hudChat pointer.");
 		return;
 	}
 
@@ -624,7 +624,7 @@ log_chat_message (
 
 	// Check if the HudChat pointer is correct
 	if (!hudChat->pThis) {
-		warn ("Cannot add message until a reference to the HudChat has been found.");
+		warning ("Cannot add message until a reference to the HudChat has been found.");
 		return;
 	}
 
@@ -632,7 +632,7 @@ log_chat_message (
 		messageLength = strlen (message);
 	}
 
-	HudChat_addMessage ((void *) hudChat->pThis, message, 1, 0xA2669FF8);
+	HudChat_addMessage ((void *) hudChat->pThis, message, 1);
 }
 
 /** =======================================================================================
@@ -747,7 +747,7 @@ move_object (
 
 	D3D9Object *object = D3D9ObjectFactory_get (id);
 	if (!object) {
-		warn ("Object ID=%d not found.", id);
+		warning ("Object ID=%d not found.", id);
 		return;
 	}
 
@@ -773,12 +773,12 @@ rect_object_set (
 
 	D3D9Object *object = D3D9ObjectFactory_get (id);
 	if (!object) {
-		warn ("Object ID=%d not found.", id);
+		warning ("Object ID=%d not found.", id);
 		return;
 	}
 
 	if (object->type != D3D9_OBJECT_RECTANGLE) {
-		warn ("Received wrong object type for object ID=%d, rectangle expected (type = %d).", id, object->type);
+		warning ("Received wrong object type for object ID=%d, rectangle expected (type = %d).", id, object->type);
 		return;
 	}
 
@@ -806,12 +806,12 @@ text_object_set (
 
 	D3D9Object *object = D3D9ObjectFactory_get (id);
 	if (!object) {
-		warn ("Object ID=%d not found.", id);
+		warning ("Object ID=%d not found.", id);
 		return;
 	}
 
 	if (object->type != D3D9_OBJECT_TEXT) {
-		warn ("Received wrong object type for object ID=%d, text expected (type = %d).", id, object->type);
+		warning ("Received wrong object type for object ID=%d, text expected (type = %d).", id, object->type);
 		return;
 	}
 
@@ -836,12 +836,12 @@ sprite_object_set (
 	D3D9Object *object = D3D9ObjectFactory_get (id);
 
 	if (!object) {
-		warn ("Object ID=%d not found.", id);
+		warning ("Object ID=%d not found.", id);
 		return;
 	}
 
 	if (object->type != D3D9_OBJECT_SPRITE) {
-		warn ("Received wrong object type for object ID=%d, sprite expected (type = %d).", id, object->type);
+		warning ("Received wrong object type for object ID=%d, sprite expected (type = %d).", id, object->type);
 		return;
 	}
 

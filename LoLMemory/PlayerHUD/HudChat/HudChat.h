@@ -65,18 +65,17 @@ HudChat_test (
 );
 
 /*
- * Description            : Function called when a message is received.
- *                          It is called before the message is displayed in the chat, so it is possible to modify the chatMsg string
- * HudChat *_this        : An allocated HudChat from the client, not the LoLClientAPI structure
- * char *chatMsg         : A string containing the line of the chat added
- * int size              : The size of the string
+ * Description     : Function called when a message is received.
+ *  It is called before the message is displayed in the chat, so it is possible to modify the chatMsg string
+ *	HudChat *_this : An allocated HudChat from the client, not the LoLClientAPI structure
+ *  char * chatMsg : The message of the chat
+	int flags      : Flags
  */
 void __thiscall
 HudChat_addMessage (
 	void *_this,
 	char *chatMsg,
-	int a3,
-	int size
+	int flags
 );
 
 // --------- Destructors ----------

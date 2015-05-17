@@ -15,29 +15,29 @@ ChampionArray_test (
 	ChampionArray *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (this->end == 0 || this->start == 0) {
-		fail ("ChampionArray boundaries is egal to zero, test failed.");
+		error ("ChampionArray boundaries is egal to zero, test failed.");
 		return false;
 	}
 
 	if (this->end < this->start) {
-		fail ("Wrong championArray boundaries, test failed.");
+		error ("Wrong championArray boundaries, test failed.");
 		return false;
 	}
 
 	if (this->championsCount > 12) {
-		fail ("The number of champions seems a bit weird : %d players.", this->championsCount);
+		error ("The number of champions seems a bit weird : %d players.", this->championsCount);
 		// Don't fail : Who knows if Riot will release a 16 players game mode someday.
 	}
 
 	for (int i = 0; i < this->championsCount; i++)
 	{
 		if (! Unit_test (this->champions[i])) {
-			fail ("Unit test Unit ID=%d failed.", i);
+			error ("Unit test Unit ID=%d failed.", i);
 			return false;
 		}
 		dbg ("[OK] Unit <%.16s> test success.", this->champions[i]->summonerName);

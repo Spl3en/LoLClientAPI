@@ -738,7 +738,7 @@ get_chat_message (
 		// The chat line is being sent as an dynamic object right after the first packet
 		char *chatLine = calloc (1, packet.objectPacket.size + 1);
 		if (!es_recv_buffer (api->clientSocket, chatLine, packet.objectPacket.size)) {
-			warn ("Error when receiving the object packet (API_RECV_ERROR).");
+			warning ("Error when receiving the object packet (API_RECV_ERROR).");
 			api->lastError = API_RECV_ERROR;
 			return NULL;
 		}
@@ -766,6 +766,8 @@ log_chat_message (
 		.request = REQUEST_LOG_CHAT_MESSAGE,
 		.objectPacket.size = messageLength
 	};
+
+	dbg ("=> CLIENT log_chat_message = %s", message);
 
 	LoLClientAPI_send (api, &packet, sizeof(packet));
 	es_send (api->clientSocket, message, messageLength);
@@ -1206,7 +1208,7 @@ eject_api (
 
 	// Check exit status
 	if (strcmp (packet.bufferPacket.buffer, LOLAPI_STATUS_EXIT) != 0) {
-		warn ("Malformed LoLAPIServer exit status response.");
+		warning ("Malformed LoLAPIServer exit status response.");
 		return false;
 	}
 

@@ -12,24 +12,24 @@
 static HudChat *hudChat = NULL;
 
 /*
- * Description 	         : Allocate a new HudChat structure.
- * DWORD baseAddress     : Base address of the module
- * DWORD hudChatInstance : The address of hudChat
- * DWORD sizeOfModule    : Size of the module
- * Return                : A pointer to an allocated HudChat.
+ * Description 	           : Allocate a new HudChat structure.
+ * DWORD baseAddress       : Base address of the module
+ * DWORD playerHUDInstance : The address of playHud
+ * DWORD sizeOfModule      : Size of the module
+ * Return                  : A pointer to an allocated HudChat.
  */
 HudChat *
 HudChat_new (
 	DWORD baseAddress,
 	DWORD sizeOfModule,
-	DWORD hudChatInstance
+	DWORD playerHUDInstance
 ) {
 	HudChat *this;
 
 	if ((this = calloc (1, sizeof(HudChat))) == NULL)
 		return NULL;
 
-	if (!HudChat_init (this, baseAddress, sizeOfModule, hudChatInstance)) {
+	if (!HudChat_init (this, baseAddress, sizeOfModule, playerHUDInstance)) {
 		HudChat_free (this);
 		return NULL;
 	}
@@ -41,23 +41,20 @@ HudChat_new (
 
 
 /*
- * Description           : Initialize an allocated HudChat structure.
- * HudChat *this         : An allocated HudChat to initialize.
- * DWORD baseAddress     : Base address of the module
- * DWORD hudChatInstance : The address of hudChat
- * DWORD sizeOfModule    : Size of the module
- * Return                : true on success, false on failure.
+ * Description             : Initialize an allocated HudChat structure.
+ * HudChat *this           : An allocated HudChat to initialize.
+ * DWORD baseAddress       : Base address of the module
+ * DWORD playerHUDInstance : The address of playHud
+ * DWORD sizeOfModule      : Size of the module
+ * Return                  : true on success, false on failure.
  */
 bool
 HudChat_init (
 	HudChat *this,
 	DWORD baseAddress,
 	DWORD sizeOfModule,
-	DWORD hudChatInstance
+	DWORD playerHUDInstance
 ) {
-
-	this->pThis = hudChatInstance;
-
 	DWORD MaxChatBufferSizeStr = memscan_string (
 		"MaxChatBufferSizeStr",
 		baseAddress, sizeOfModule,
@@ -97,7 +94,7 @@ HudChat_init (
 	while (find_pattern ((char *) addMessageReference - offset, sizeof(startOfFunction), startOfFunction, "xxxxx") == -1) {
 		offset++;
 		if (offset > 0x1000) {
-			warn ("Start of function is really too far. Something must be wrong.");
+			warning ("Start of function is really too far. Something must be wrong.");
 			return false;
 		}
 	}
@@ -105,11 +102,102 @@ HudChat_init (
 	addMessageReference += sizeof(startOfFunction) - offset;
 	dbg ("HudChat_addMessage found : %x", addMessageReference);
 
+    DWORD hudChatOffset = 0;
+    while (true) {
+            unsigned char trampoline [] = {
+            /*  51                push ecx
+                A1 D0C24E01       mov eax, [dword ds:League_of_Legends.14EC2D0]
+                8B88 0C010000     mov ecx, [dword ds:eax+10C]
+                85C9              test ecx, ecx
+                74 08             je short League_of_Legends.00DD8C28
+                83C4 04           add esp, 4
+                E9 48F9BCFF       jmp League_of_Legends.009A8570
+            */
+            0x51,
+            0xA1, '_', '_', '_', '_',
+            0x8B, 0x88, '?', '?', '?', '?',
+            0x85, 0xC9,
+            0x74, '?',
+            0x83, 0xC4, '?',
+            0xE9, '?', '?', '?', '?',
+        };
+
+        replacePos = str_n_pos (trampoline, "____", sizeof(trampoline));
+        memcpy(&trampoline[replacePos], &playerHUDInstance, 4);
+
+        // Find a reference to addMessageReference
+	    DWORD hudChatOffsetAddress = -1;
+        hudChatOffset = mem_scanner ("hudChatOffset",
+            baseAddress, sizeOfModule,
+            trampoline,
+            "x"
+            "xxxxx"
+            "xx????"
+            "xx"
+            "x?"
+            "xx?"
+            "x????",
+
+            "x"
+            "xxxxx"
+            "xx????"
+            "xx"
+            "xx"
+            "xxx"
+            "xxxxx",
+		    &hudChatOffsetAddress
+        );
+
+        if (!hudChatOffsetAddress) {
+            error ("hudChatOffset not found.");
+            return false;
+        }
+
+        DWORD jmpAddress;
+        DWORD jmpOffset = mem_scanner ("hudChatJmpOffset",
+            // Start searching for a little bit before (lazy approach)
+            hudChatOffsetAddress - sizeof (trampoline), sizeof (trampoline) * 3,
+            trampoline,
+            "x"
+            "xxxxx"
+            "xx????"
+            "xx"
+            "x?"
+            "xx?"
+            "x????",
+
+            "x"
+            "xxxxx"
+            "xxxxxx"
+            "xx"
+            "xx"
+            "xxx"
+            "x????",
+		    &jmpAddress
+        );
+
+        jmpAddress += sizeof (trampoline);
+        dbg ("hudPlayer accessor found : %#x (offset = %#x)", jmpAddress, jmpOffset);
+        dbg ("Destination : %#p", jmpAddress + jmpOffset);
+        if ((DWORD) (jmpAddress + jmpOffset) == addMessageReference) {
+            dbg ("The correct accessor has been found !");
+            break;
+        }
+
+        sizeOfModule -= (hudChatOffsetAddress + sizeof (trampoline) - baseAddress);
+        baseAddress = hudChatOffsetAddress + sizeof (trampoline);
+    }
+
+    dbg ("hudChatOffset found = %#x", hudChatOffset);
+    dbg ("pThis Address = %#x", (*(DWORD *)playerHUDInstance) + hudChatOffset);
+    this->pThis = *((DWORD *)((*(DWORD *)playerHUDInstance) + hudChatOffset));
+    dbg ("Chat pThis = %#x", this->pThis);
+
 	// Init queue messages for client
 	bb_queue_init (&this->chatMessages);
 
 	// Hook HudChat_addMessage
-	// HookEngine_hook ((ULONG_PTR) addMessageReference, (ULONG_PTR) &HudChat_addMessage);
+	HookEngine_hook ((ULONG_PTR) addMessageReference, (ULONG_PTR) &HudChat_addMessage);
 
 	return true;
 }
@@ -118,23 +206,21 @@ HudChat_init (
  * Description     : Function called when a message is received.
  *  It is called before the message is displayed in the chat, so it is possible to modify the chatMsg string
  *	HudChat *_this : An allocated HudChat from the client, not the LoLClientAPI structure
- *  float a3       : Currently unknown
- *	char *chatMsg  : A string containing the line of the chat added
- * 	int size       : The size of the string
+ *  char * chatMsg : The message of the chat
+	int flags      : Flags
  */
 void __thiscall
 HudChat_addMessage (
 	void *_this,
 	char *chatMsg,
-	int a3,
-	int size
+	int flags
 ) {
-	void (__thiscall *_HudChat_addMessage) (HudChat *this, char *chatMsg, int a3, int size)
+	void (__thiscall *_HudChat_addMessage) (HudChat *this, char *, int)
 		= (typeof(_HudChat_addMessage)) HookEngine_get_original_function ((ULONG_PTR) HudChat_addMessage);
 
 	bb_queue_add (&hudChat->chatMessages, strdup (chatMsg));
 
-	_HudChat_addMessage (_this, chatMsg, a3, size);
+	_HudChat_addMessage (_this, chatMsg, flags);
 }
 
 

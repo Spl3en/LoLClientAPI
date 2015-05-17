@@ -15,12 +15,12 @@ HeroClient_test (
 	HeroClient *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (this->pThis == 0) {
-		warn ("[FAIL] HeroClient not detected. (Spectator mode ?)");
+		warning ("[FAIL] HeroClient not detected. (Spectator mode ?)");
 		return true;
 	}
 
@@ -31,7 +31,7 @@ HeroClient_test (
 	dbg ("HeroClient position detected : %f %f", currentPosition.x, currentPosition.y);
 
 	if (!Position_in_map (&currentPosition)) {
-		fail ("Current position test failed");
+		error ("Current position test failed");
 	}
 
 	/* Summoner name test */
@@ -44,7 +44,7 @@ HeroClient_test (
 		}
 
 		if (!(isalnum ((int) currentSummonerName[i]) || isspace((int) currentSummonerName[i]))) {
-			fail ("Malformed summoner name : %s.", currentSummonerName);
+			error ("Malformed summoner name : %s.", currentSummonerName);
 		}
 	}
 
@@ -56,12 +56,12 @@ HeroClient_test (
 
 	// 100000 HP seems to be big enough to be reported if the current/maximum HP is bigger
 	if (curHP < 0.0 || maxHP < 0.0 || curHP > 100000.0 || maxHP > 100000.0) {
-		fail ("HP test failed : cur=%f max=%f", this->curHP, this->maxHP);
+		error ("HP test failed : cur=%f max=%f", this->curHP, this->maxHP);
 	}
 
 	/* Team test */
 	if (get_champion_team () == TEAM_UNKNOWN) {
-		fail ("Team test failed : 0x%x (%x)", this->team, &this->team);
+		error ("Team test failed : 0x%x (%x)", this->team, &this->team);
 	}
 
 	return true;

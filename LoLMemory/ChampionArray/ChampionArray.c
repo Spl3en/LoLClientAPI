@@ -85,7 +85,8 @@ ChampionArray_init (
 		"x"
 		"xx????"
 		"xxx"
-		"xx"
+		"xx",
+		NULL
 	);
 
 	if (championArrayEnd)

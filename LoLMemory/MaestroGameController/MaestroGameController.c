@@ -51,7 +51,7 @@ MaestroGameController_init (
 	);
 
 	if (!result) {
-		fail ("MaestroGameControllerStr not found.");
+		error ("MaestroGameControllerStr not found.");
 		return false;
 	}
 
@@ -106,7 +106,8 @@ MaestroGameController_init (
 		"xxxxxx"
 		"xxxxx"
 		"x"
-		"xxxxx"
+		"xxxxx",
+		NULL
 	);
 
 	if (maestroGameControllerInstance) {
@@ -115,7 +116,7 @@ MaestroGameController_init (
 
 		if (!this->pThis) {
 			// We cannot conclude an error occurred because it is a normal behavior in spectator mode
-			warn ("MaestroGameControllerInstance not found.");
+			warning ("MaestroGameControllerInstance not found.");
 		}
 		else {
 			dbg ("MaestroGameControllerInstance found : 0x%08X", this->pThis);
@@ -155,7 +156,7 @@ MaestroGameController_test (
 	MaestroGameController *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 

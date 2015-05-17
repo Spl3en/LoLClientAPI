@@ -65,7 +65,7 @@ MaestroMessageAgent_test (
 	MaestroMessageAgent *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 

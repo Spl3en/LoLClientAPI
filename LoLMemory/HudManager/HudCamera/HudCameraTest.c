@@ -18,7 +18,7 @@ HudCamera_test (
 	get_camera_position (&cameraPosition.x, &cameraPosition.y);
 
 	if (!Position_in_map (&cameraPosition)) {
-		fail ("Camera position test failed : %f %f", cameraPosition.x, cameraPosition.y);
+		error ("Camera position test failed : %f %f", cameraPosition.x, cameraPosition.y);
 	}
 
 	return true;

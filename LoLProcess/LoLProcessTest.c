@@ -15,12 +15,12 @@ LoLProcess_test (
 	LoLProcess *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
 	if (!LoLModule_test (this->lol)) {
-		fail ("LoL module test fail.");
+		error ("LoL module test fail.");
 		return false;
 	}
 

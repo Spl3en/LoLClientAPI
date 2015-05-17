@@ -15,7 +15,7 @@ Unit_test (
 	Unit *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
@@ -31,7 +31,7 @@ Unit_test (
 	dbg ("Unit ally_%d position : %f %f", this->teammateId, currentPosition.x, currentPosition.y);
 
 	if (!Position_in_map (&currentPosition)) {
-		fail ("Current position test failed : %f %f", currentPosition.x, currentPosition.y);
+		error ("Current position test failed : %f %f", currentPosition.x, currentPosition.y);
 	}
 
 	// Unit name test
@@ -44,7 +44,7 @@ Unit_test (
 		}
 
 		if (!(isalnum ((int) teammateSummonerName[i]) || isspace((int) teammateSummonerName[i]))) {
-			fail ("Malformed summoner name : %s.", teammateSummonerName);
+			error ("Malformed summoner name : %s.", teammateSummonerName);
 		}
 	}
 
@@ -57,7 +57,7 @@ Unit_test (
 
 	// 100000 HP seems to be big enough to be reported if the current/maximum HP is bigger
 	if (curHP < 0.0 || maxHP < 0.0 || curHP > 100000.0 || maxHP > 100000.0) {
-		fail ("HP test failed : cur=%f max=%f", this->curHP, this->maxHP);
+		error ("HP test failed : cur=%f max=%f", this->curHP, this->maxHP);
 	}
 
 	return true;

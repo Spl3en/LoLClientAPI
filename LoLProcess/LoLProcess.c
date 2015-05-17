@@ -22,7 +22,7 @@ LoLProcess_new (void)
 	}
 
 	if (!LoLProcess_init (this)) {
-		warn ("Initialization failed.");
+		warning ("Initialization failed.");
 		LoLProcess_free (this);
 		return NULL;
 	}
@@ -34,7 +34,7 @@ LoLProcess_new (void)
 
 	// Unit testing
 	if (!LoLProcess_test (this)) {
-		fail ("LoLProcess unit test failed.");
+		error ("LoLProcess unit test failed.");
 		log_chat_message ("<font color=\"#ff3333\">LoLClientAPI failed to start.</font>", -1);
 		LoLProcess_setState (this, STATE_ERROR);
 		return NULL;
@@ -46,7 +46,7 @@ LoLProcess_new (void)
 	LoLProcess_setState (this, STATE_READY);
 
 	// Send a ready message to the chat log
-	// log_chat_message ("<font color=\"#33ff33\">LoLClientAPI is ready.</font>", -1);
+	log_chat_message ("<font color=\"#33ff33\">LoLClientAPI is ready.</font>", -1);
 
 	return this;
 }
@@ -97,7 +97,7 @@ LoLProcess_load_hook_engine (
 	free (hookEngineDllPath);
 
 	if (!this->hookEngine) {
-		fail ("Hook Engine didn't initialize correctly");
+		error ("Hook Engine didn't initialize correctly");
 		return false;
 	}
 
@@ -118,7 +118,7 @@ LoLProcess_scan_modules (
 	MODULE_INFORMATION_TABLE * moduleTable = QueryModuleInformationProcess ();
 
 	if (!moduleTable) {
-		fail ("Module table not found.");
+		error ("Module table not found.");
 		return false;
 	}
 
@@ -133,7 +133,7 @@ LoLProcess_scan_modules (
 		if (_wcsicmp (moduleEntry->BaseName.Buffer, L"RiotLauncher.dll") == 0) {
 			dbg ("Maestro module found : 0x%08X (size = 0x%08X)", baseAddress, sizeOfModule);
 			// if ((this->maestro = Maestro_new (baseAddress, sizeOfModule)) == NULL) {
-			// 	warn ("Maestro module not found");
+			// 	warning ("Maestro module not found");
 			// 	return false;
 			// }
 		}
@@ -143,7 +143,7 @@ LoLProcess_scan_modules (
 			// Load DirectX hooks
 			dbg ("d3d9 module found : 0x%08X (size = 0x%08X)", baseAddress, sizeOfModule);
 			if ((this->dx = LoLDx_new (baseAddress, sizeOfModule)) == NULL) {
-				fail ("Error when hooking d3d9 module.");
+				error ("Error when hooking d3d9 module.");
 				return false;
 			}
 		}
@@ -152,7 +152,7 @@ LoLProcess_scan_modules (
 		else if (_wcsicmp (moduleEntry->BaseName.Buffer, L"League of Legends.exe") == 0) {
 			dbg ("LoL module found : 0x%08X (size = 0x%08X)", baseAddress, sizeOfModule);
 			if ((this->lol = LoLModule_new (baseAddress, sizeOfModule)) == NULL) {
-				fail ("LoL base image module not initialized correctly.");
+				error ("LoL base image module not initialized correctly.");
 				return false;
 			}
 		}
@@ -202,13 +202,13 @@ LoLProcess_init (
 
 	// Load Hook Engine
 	if (!LoLProcess_load_hook_engine (this)) {
-		fail ("Error when loading NtHookEngine.");
+		error ("Error when loading NtHookEngine.");
 		return false;
 	}
 
 	// Detect LoL modules
 	if (!LoLProcess_scan_modules (this)) {
-		fail ("Error when scanning modules.");
+		error ("Error when scanning modules.");
 		return false;
 	}
 

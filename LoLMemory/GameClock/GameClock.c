@@ -75,7 +75,8 @@ GameClock_init (
 		"xxx"
 		"xx"
 		"x"
-		"xx"
+		"xx",
+		NULL
 	);
 
 	if (!gameClockInstance) {

@@ -165,9 +165,9 @@ LoLServerAPI_handle_request (
 			// Receive the chat message right after the first packet
 			char * message = calloc (1, packet.objectPacket.size + 1);
 			es_recv_buffer (EASY_SOCKET (client), message, packet.objectPacket.size);
+			dbg ("Server : %s", message);
 			log_chat_message (message, packet.objectPacket.size);
 		} break;
-
 
 		// Drawing APIs
 		case REQUEST_CREATE_RECTANGLE: {
@@ -365,7 +365,7 @@ LoLServerAPI_init (
 	es_init ();
 
 	if ((this->serverSocket = es_server_new (LOLAPI_PORT, 1337)) == NULL) {
-        warn ("Cannot create API server.");
+        warning ("Cannot create API server.");
         return false;
 	}
 
@@ -431,7 +431,7 @@ LoLServerAPI_test (
 	LoLServerAPI *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 

@@ -53,13 +53,13 @@ PlayerHUD_init (
 	unsigned char pattern[] = {
 		/*  57                     push edi
 			8B3D 1C908C01          mov edi, [playerHUDInstance]
-			83F8 03                cmp eax, 3
+			83F8 03                cmp eax, 4
 			77 6F                  ja short League_of_Legends.default
 			FF2485 54AF6600        jmp [dword ds:eax*4+League_of_Legends.switchTable]
 		*/
 			0x57,
 			0x8B, 0x3D, '?', '?', '?', '?',
-			0x83, 0xF8, 0x03,
+			0x83, 0xF8, 0x04,
 			0x77, '?',
 			0xFF, 0x24, 0x85, '?', '?', '?', '?'
 	};
@@ -78,7 +78,8 @@ PlayerHUD_init (
 		"xx????"
 		"xxx"
 		"xx"
-		"xxxxxxx"
+		"xxxxxxx",
+		NULL
 	);
 
 	if (!playerHUDInstance) {
@@ -91,9 +92,9 @@ PlayerHUD_init (
 	memcpy (this, *((DWORD **) playerHUDInstance), sizeof(PlayerHUD));
 	this->pThis = *((DWORD *) playerHUDInstance);
 
-	// Instanciate playerHudChat
-	if ((this->hudChat = HudChat_new (baseAddress, sizeOfModule, (DWORD) this->hudChat)) == NULL) {
-		warn ("HudChat not found.");
+	// Instanciate hudChat
+	if ((this->hudChat = HudChat_new (baseAddress, sizeOfModule, playerHUDInstance)) == NULL) {
+		warning ("HudChat not found.");
 		return false;
 	}
 
@@ -126,7 +127,7 @@ PlayerHUD_test (
 	PlayerHUD *this
 ) {
 	if (!this) {
-		fail ("Instance is NULL");
+		error ("Instance is NULL");
 		return false;
 	}
 
